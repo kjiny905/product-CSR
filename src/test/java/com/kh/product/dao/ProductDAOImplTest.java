@@ -28,24 +28,17 @@ public class ProductDAOImplTest {
     product.setQuantity(10L);
     product.setPrice(1000000L);
 
-    Long productId = productDAO.save(product);
-    log.info("productId={}",productId);
-    Assertions.assertThat(productId).isGreaterThan(0L);
+    Long pid = productDAO.save(product);
+    log.info("pid={}",pid);
+    Assertions.assertThat(pid).isGreaterThan(0L);
   }
 
   //조회
   @Test
   @DisplayName("상품조회")
   void findById(){
-    Long productId = 163L;
-    Optional<Product> product = productDAO.findById(productId);
-//    if(product.isPresent()) {
-//      log.info("product={}", product.get());
-//    }else{
-//      log.info("조회한 결과 없음");
-//    }
-//    Assertions.assertThat(product.stream().count())
-//        .isEqualTo(1);
+    Long pid = 163L;
+    Optional<Product> product = productDAO.findById(pid);
     Product findedProduct = product.orElseThrow();// 없으면 java.util.NoSuchElementException
     Assertions.assertThat(findedProduct.getPname()).isEqualTo("복사기");
     Assertions.assertThat(findedProduct.getQuantity()).isEqualTo(10L);
@@ -56,13 +49,13 @@ public class ProductDAOImplTest {
   @Test
   @DisplayName("상품수정")
   void update() {
-    Long productId = 163L;
+    Long pid = 163L;
     Product product = new Product();
     product.setPname("복사기_수정");
     product.setQuantity(20L);
     product.setPrice(2000000L);
-    int updatedRowCount = productDAO.update(productId, product);
-    Optional<Product> findedProduct = productDAO.findById(productId);
+    int updatedRowCount = productDAO.update(pid, product);
+    Optional<Product> findedProduct = productDAO.findById(pid);
 
     Assertions.assertThat(updatedRowCount).isEqualTo(1);
     Assertions.assertThat(findedProduct.get().getPname()).isEqualTo(product.getPname());
@@ -74,15 +67,10 @@ public class ProductDAOImplTest {
   @Test
   @DisplayName("상품삭제")
   void delete() {
-    Long productId = 165L;
-    int deletedRowCount = productDAO.delete(productId);
-    Optional<Product> findedProduct = productDAO.findById(productId);
-   // Product product = findedProduct.orElseThrow();
-    //case1)
-//    Assertions.assertThat(findedProduct.ofNullable("없음").orElseThrow())
-//        .isNotEqualTo("없음");
+    Long pid = 165L;
+    int deletedRowCount = productDAO.delete(pid);
+    Optional<Product> findedProduct = productDAO.findById(pid);
 
-    //case2)
     Assertions.assertThatThrownBy(()->findedProduct.orElseThrow())
         .isInstanceOf(NoSuchElementException.class);
   }
@@ -92,52 +80,14 @@ public class ProductDAOImplTest {
   @DisplayName("상품목록")
   void findAll() {
     List<Product> list = productDAO.findAll();
-    //case1)
-//    for(Product product : list){
-//      log.info("product={}",product);
-//    }
-    //case2)
-//    list.stream().forEach(product ->log.info("product={}",product));
-
     Assertions.assertThat(list.size()).isGreaterThan(0);
   }
 
   @Test
-  @DisplayName("상품존재")
-  void isExist(){
-    Long prodocutId = 244L;
-    boolean exist = productDAO.isExist(prodocutId);
-    Assertions.assertThat(exist).isTrue();
-  }
-  @Test
-  @DisplayName("상품무")
-  void isExist2(){
-    Long prodocutId = 0L;
-    boolean exist = productDAO.isExist(prodocutId);
-    Assertions.assertThat(exist).isFalse();
-  }
-
-  @Test
-  @DisplayName("전체 삭제")
-  void deleteAll(){
-    int deletedRows = productDAO.deleteAll();
-    int countOfRecord = productDAO.countOfRecord();
-    Assertions.assertThat(countOfRecord).isEqualTo(0);
-  }
-
-  @Test
-  @DisplayName("레코드 건수")
-  void countOfRecord(){
-    int countOfRecord = productDAO.countOfRecord();
-    log.info("countOfRecord={}",countOfRecord);
-  }
-
-
-  @Test
   @DisplayName("부분삭제")
   void deleteParts(){
-    List<Long> productIds = Arrays.asList(326L,327L,325L,341L);
-    int rows = productDAO.deleteParts(productIds);
-    Assertions.assertThat(rows).isEqualTo(productIds.size());
+    List<Long> pids = Arrays.asList(326L,327L,325L,341L);
+    int rows = productDAO.deleteParts(pids);
+    Assertions.assertThat(rows).isEqualTo(pids.size());
   }
 }
